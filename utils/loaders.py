@@ -5,6 +5,7 @@ Document loaders for different formats.
 from typing import Dict, List
 from glob import glob
 from pypdf import PdfReader
+from tqdm import tqdm
 
 from utils.preprocess import remove_illegal_chars
 
@@ -52,7 +53,7 @@ def load_dir(path: str, extension: str = "pdf") -> List[Dict[str, str]]:
         # TODO: Implement other formats
         raise NotImplementedError(f"Extension {extension} not supported")
 
-    for doc_path in doc_paths:
+    for doc_path in tqdm(doc_paths):
         docs.extend(loader(doc_path))
 
     return docs

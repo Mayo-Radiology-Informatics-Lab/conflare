@@ -24,12 +24,7 @@ def chunk_text(text: str, chunk_size: int, chunk_overlap: int) -> List[str]:
         end_index = min(i + chunk_size, len(text))
         chunk = text[i: end_index]
         chunked_docs.append("..." + chunk + "...")
-
-        # Advance i to start the next chunk, accounting for overlap
         i += chunk_size - chunk_overlap
-
-        # Avoid creating a tiny chunk at the end by breaking if the next
-        # start is too close to the document's end
         if i + chunk_size - chunk_overlap > len(text):
             break
 

@@ -21,3 +21,4 @@ venv.bak/
 
 # Data
 data/documents
+*.sqlite3

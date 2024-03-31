@@ -23,9 +23,9 @@ class TextEmbedding:
         self.batch_size = batch_size
         self.normalize_embeddings = normalize_embeddings
 
-    def __call__(self, texts: List[str]) -> List[List[float]]:
+    def __call__(self, input: List[str]) -> List[List[float]]:
         embeddings = self.model.encode(
-            texts, batch_size=self.batch_size, normalize_embeddings=self.normalize_embeddings
+            input, batch_size=self.batch_size, normalize_embeddings=self.normalize_embeddings
         ).tolist()
 
         return embeddings

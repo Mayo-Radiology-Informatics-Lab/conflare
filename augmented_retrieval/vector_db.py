@@ -9,7 +9,7 @@ import chromadb
 def get_vector_db(
     db_path: str,
     db_name: str,
-    embedding: callable,
+    embedding_fn: callable,
     docs: List[Dict[str, str]] = [],
     db_metadata: Dict[str, str] = {'hnsw:space':'cosine'},
 ) -> chromadb.Collection:
@@ -20,7 +20,7 @@ def get_vector_db(
     Args:
         db_path (str): The path to the vector database.
         db_name (str): The name of the vector database.
-        embedding (callable): The function used for embedding.
+        embedding_fn (callable): The function used for embedding.
         docs (List[Dict[str, str]], optional): List of documents with content, source, page, and index. Defaults to [].
         db_metadata (Dict[str, str], optional): Metadata for the database, default includes 'hnsw:space' as 'cosine'.
     
@@ -31,7 +31,7 @@ def get_vector_db(
     chroma_client = chromadb.PersistentClient(path=db_path)
     vector_db = chroma_client.get_or_create_collection(
         name=db_name,
-        embedding_function=embedding,
+        embedding_function=embedding_fn,
         metadata=db_metadata
     )
     if vector_db.count() > 0:
