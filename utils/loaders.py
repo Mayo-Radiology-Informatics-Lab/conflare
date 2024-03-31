@@ -6,6 +6,7 @@ from typing import Dict, List
 from glob import glob
 from pypdf import PdfReader
 
+from utils.preprocess import remove_illegal_chars
 
 def pdf_loader(pdf_path: str) -> List[Dict[str, str]]:
     """
@@ -21,7 +22,8 @@ def pdf_loader(pdf_path: str) -> List[Dict[str, str]]:
     pdf_docs = []
     reader = PdfReader(pdf_path)
     for i, page in enumerate(reader.pages):
-        pdf_docs.append({"source": pdf_path, "page": i, "content": page.extract_text()})
+        content = remove_illegal_chars(page.extract_text())
+        pdf_docs.append({"source": pdf_path, "page": i, "content": content})
 
     return pdf_docs
 
