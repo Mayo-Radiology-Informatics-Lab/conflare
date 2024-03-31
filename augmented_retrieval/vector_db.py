@@ -35,6 +35,7 @@ def get_vector_db(
         metadata=db_metadata
     )
     if vector_db.count() > 0:
+        print("Loading from disk... the given docs will be ignored.")
         return vector_db
     
     vector_db.add(

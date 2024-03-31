@@ -46,6 +46,7 @@ def load_dir(path: str, extension: str = "pdf") -> List[Dict[str, str]]:
         The function currently supports loading PDF files. Other formats are not implemented.
     """
     doc_paths = glob(f"{path}/*.{extension}")
+    print(f"Found {len(doc_paths)} {extension} files in this dir.")
     docs = []
     if extension == "pdf":
         loader = pdf_loader
