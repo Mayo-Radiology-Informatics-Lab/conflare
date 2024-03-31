@@ -57,6 +57,6 @@ def get_vector_db(
 
 
 if __name__ == "__main__":
-    client = chromadb.PersistentClient(path="./data/vector_db")
+    client = chromadb.PersistentClient(path="../data/vector_db")
     collection = client.get_or_create_collection(name="example")
     print(collection.count())
