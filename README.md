@@ -16,6 +16,8 @@ Example:
 docs, qa_pipeline, vector_db = initialize_pipeline(path_to_docs="./data/documents")
 
 # 2
+
+# To generate questions and then calibration records from scratch
 calibration_records = create_calibration_records(
     docs,
     size=100,
@@ -23,6 +25,12 @@ calibration_records = create_calibration_records(
     qa_pipeline=qa_pipeline,
     vector_db=vector_db,
 )
+
+# OR to load them from disk
+q_evaluation = QuestionEvaluation.from_pickle(
+    path_to_pickle="./data/calibration_set/Calibration_Records.pkl"
+)
+calibration_records = q_evaluation.get_calibration_records()
 
 # 3
 conformal_rag = ConformalRetrievalQA(

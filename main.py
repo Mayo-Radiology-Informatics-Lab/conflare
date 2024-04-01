@@ -50,3 +50,7 @@ if __name__ == "__main__":
 
     QUESTION = "What types of regularization methods have been used in training of the deep models?"
     response, retrieved_docs = conformal_rag(QUESTION)
+
+
+    # q_evaluation = QuestionEvaluation.from_pickle(path_to_pickle="./data/calibration_set/calibration_records.pkl")
+    # calibration_records = q_evaluation.get_calibration_records()
