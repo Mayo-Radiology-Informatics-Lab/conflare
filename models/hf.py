@@ -17,7 +17,7 @@ class HFModelQA:
     "Creates an object for QA using an HF model"
     def __init__(
         self,
-        model_id: str = "mistralai/Mistral-7B-Instruct-v0.1",
+        model: str = "mistralai/Mistral-7B-Instruct-v0.1",
         quantize: bool = True,
         temperature: float = 0.1,
         max_tokens: int = 2000,
@@ -36,7 +36,7 @@ class HFModelQA:
         Returns:
             None
         """
-        self.model, self.tokenizer = self.load_hf_model_tokenizer(model_id, quantize)
+        self.model, self.tokenizer = self.load_hf_model_tokenizer(model, quantize)
         self.generator = transformers.pipeline(
             model=self.model,
             tokenizer=self.tokenizer,
