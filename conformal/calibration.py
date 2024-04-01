@@ -43,7 +43,7 @@ class QuestionGeneration:
         self.generated_questions = []
         self.error_logs = []
 
-    def generate_questions(self, save_to_disk: bool = True):
+    def generate_questions(self, save_to_disk: bool = False) -> List[List]:
         """
         Generate questions based on the content of the documents (chunks) using the qa_pipeline.
 
@@ -75,6 +75,8 @@ class QuestionGeneration:
 
         if save_to_disk:
             self.save()
+        
+        return self.generated_questions
 
     def save(self):
         """
@@ -168,7 +170,7 @@ class QuestionEvaluation:
         self.path_to_pickle = path_to_pickle
         self.calibration_records = []
 
-    def evaluate(self, save_to_disk: bool = True):
+    def evaluate(self, save_to_disk: bool = False) -> List[Dict[str, str]]:
         for i, question_list in tqdm(enumerate(self.questions)):
             _, doc, question = question_list
             source_chunk = doc["chunk"]
@@ -217,6 +219,8 @@ class QuestionEvaluation:
 
         if save_to_disk:
             self.save()
+        
+        return self.calibration_records
 
     def save(self):
         with open(self.path_to_pickle, "wb") as f:
@@ -236,6 +240,9 @@ class QuestionEvaluation:
         else:
             raise FileNotFoundError(f"File {path_to_pickle} not found.")
 
+    def get_calibration_records(self) -> List[Dict[str, str]]:
+        return self.calibration_records
+
     def __getitem__(self, idx: int):
         if len(self.calibration_records) != 0:
             return self.calibration_records[idx]
@@ -246,3 +253,46 @@ class QuestionEvaluation:
 
     def __len__(self):
         return len(self.calibration_records)
+
+
+def create_calibration_records(
+    docs: List[Dict[str, str]],
+    size: int,
+    topic_of_interest: str,
+    qa_pipeline: Callable,
+    vector_db: chromadb.Collection,
+    save_root: str = "./data/calibration_set",
+    save_to_disk: bool = False,
+) -> List[Dict[str, str]]:
+    """
+    Create calibration records for a given set of documents.
+
+    Args:
+        docs (List[Dict[str, str]]): A list of documents to create calibration records for.
+        size (int): The size of the final calibration set (calibration records).
+        topic_of_interest (str): The topic of interest for down stream RAG QA.
+        qa_pipeline (Callable): The question-answering pipeline to use for generating questions.
+        vector_db (chromadb.Collection): The vector db to use for evaluating questions.
+        save_root (str): The root directory where the generated questions and calibration records will be saved.
+        save_to_disk (bool, optional): Whether to save the generated questions and calibration records to disk. Defaults to False.
+
+    Returns:
+        calibration_records: The generated calibration records.
+    """
+    q_generation = QuestionGeneration(
+        docs=docs,
+        qa_pipeline=qa_pipeline,
+        num_questions=size,
+        topic_of_interest=topic_of_interest,
+        path_to_pickle=os.path.join(save_root, "Generated_Questions.pkl"),
+    )
+    generated_questions = q_generation.generate_questions(save_to_disk=save_to_disk)
+    q_evaluation = QuestionEvaluation(
+        questions=generated_questions,
+        qa_pipeline=qa_pipeline,
+        vector_db=vector_db,
+        path_to_pickle=os.path.join(save_root, "Calibration_Records.pkl"),
+    )
+    calibration_records = q_evaluation.evaluate_questions(save_to_disk=save_to_disk)
+
+    return calibration_records

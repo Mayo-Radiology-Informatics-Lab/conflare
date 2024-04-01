@@ -9,6 +9,7 @@ from tqdm import tqdm
 
 from utils.preprocess import remove_illegal_chars
 
+
 def pdf_loader(pdf_path: str) -> List[Dict[str, str]]:
     """
     Load a PDF file and extract its contents into a list of dictionaries.
