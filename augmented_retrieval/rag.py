@@ -2,6 +2,7 @@
 Retrieval Augmented Generation (RAG) utilities.
 """
 
+from typing import Callable
 import chromadb
 
 from utils.prompts import RAG_QA_PROMPT
@@ -11,12 +12,12 @@ class SimpleRetrievalQA:
 
     def __init__(
         self,
-        qa_pipeline: callable,
+        qa_pipeline: Callable,
         vector_db: chromadb.Collection,
     ) -> None:
         """
         Args:
-            qa_pipeline (callable): The QA pipeline to be used; can be HF or OpenAI callable pipeline.
+            qa_pipeline (Callable): The QA pipeline to be used; can be HF or OpenAI Callable pipeline.
             vector_db (chromadb.Collection): The collection of vectors for the database.
         """
         self.vector_db = vector_db

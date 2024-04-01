@@ -2,14 +2,14 @@
 Utility functions for building a vector db. Currently Supporting ChromaDB
 """
 
-from typing import Dict, List
+from typing import Callable, Dict, List
 import chromadb
 
 
 def get_vector_db(
     db_path: str,
     db_name: str,
-    embedding_fn: callable,
+    embedding_fn: Callable,
     docs: List[Dict[str, str]] = [],
     db_metadata: Dict[str, str] = {'hnsw:space':'cosine'},
 ) -> chromadb.Collection:
@@ -20,8 +20,8 @@ def get_vector_db(
     Args:
         db_path (str): The path to the vector database.
         db_name (str): The name of the vector database.
-        embedding_fn (callable): The function used for embedding.
-        docs (List[Dict[str, str]], optional): List of documents with content, source, page, and index. Defaults to [].
+        embedding_fn (Callable): The function used for embedding.
+        docs (List[Dict[str, str]], optional): List of documents with chunk, source, page, and index. Defaults to [].
         db_metadata (Dict[str, str], optional): Metadata for the database, default includes 'hnsw:space' as 'cosine'.
     
     Returns:
@@ -39,13 +39,13 @@ def get_vector_db(
         return vector_db
     
     vector_db.add(
-        documents=[doc["content"] for doc in docs],
+        documents=[doc["chunk"] for doc in docs],
         metadatas=[
             {
                 "type": "article_chunk",
                 "source": doc["source"],
                 "page": doc["page"],
-                "chunk_index": doc["index"]
+                "chunk_index": doc["chunk_index"]
             }
             for doc in docs
         ],
