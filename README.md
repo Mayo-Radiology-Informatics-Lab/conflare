@@ -31,8 +31,10 @@ conformal_rag = ConformalRetrievalQA(
     calibration_records=calibration_records,
     error_rate=0.05,
 )
-QUESTION = "What types of regularization methods have been used in training of the deep models?"
-response, retrieved_docs = conformal_rag(QUESTION)
+
+response, retrieved_docs = conformal_rag(
+    "What types of regularization methods have been used in training of the deep models?"
+)
 ```
 
 If you have run this script once before and saved the calibration records to disk, you can use the following to load the calibration records:
