@@ -4,12 +4,12 @@ Functions for building a calibration set to be used for conformal prediction.
 
 import os
 import pickle
-from typing import Dict, List
+from typing import Callable, Dict, List
 import random
-
+import chromadb
 from tqdm import tqdm
 
-from utils.prompts import Q_GENERATION_PROMPT
+from utils.prompts import Q_GENERATION_PROMPT, Q_EVAL_PROMPT
 
 
 class QuestionGeneration:
@@ -18,7 +18,7 @@ class QuestionGeneration:
     def __init__(
         self,
         docs: List[Dict[str, str]] | None = None,
-        qa_pipeline: callable | None = None,
+        qa_pipeline: Callable | None = None,
         num_questions: int | None = 100,
         topic_of_interest: str | None = None,
         q_generation_prompt: str = Q_GENERATION_PROMPT,
@@ -27,7 +27,7 @@ class QuestionGeneration:
         """
         Args:
             docs (List[Dict[str, str]] | None, optional): A list of dictionaries representing documents. Defaults to None.
-            qa_pipeline (callable | None, optional): A callable object representing the question-answering pipeline. Defaults to None.
+            qa_pipeline (Callable | None, optional): A Callable object representing the question-answering pipeline. Defaults to None.
             num_questions (int | None, optional): The number of questions to generate. Defaults to 100.
             topic_of_interest (str | None, optional): The topic of interest for the questions. Defaults to None.
             q_generation_prompt (str, optional): The prompt for generating questions. Defaults to Q_GENERATION_PROMPT.
@@ -56,7 +56,7 @@ class QuestionGeneration:
         random.shuffle(self.docs)
         generation_pbar = tqdm(total=self.num_questions, desc="Generation Progress")
         for i, doc in enumerate(self.docs):
-            chunk = doc["content"]
+            chunk = doc["chunk"]
             prompt = self.q_generation_prompt.format(topic=self.topic_of_interest, context=chunk)
             response = self.qa_pipeline(prompt)
 
@@ -91,18 +91,19 @@ class QuestionGeneration:
             None
         """
         generated_questions_records = {
-            "model": self.qa_pipeline.model,
+            "Model": self.qa_pipeline.model,
             "topic_of_interest": self.topic_of_interest,
-            "generated_questions": self.generated_questions,
+            "generated_qs": self.generated_questions,
         }
 
         with open(self.path_to_pickle, "wb") as f:
             pickle.dump(generated_questions_records, f)
         print("Saved to disk!")
 
-    def load(self, path_to_pickle: str = None):
+    @classmethod
+    def from_pickle(cls, path_to_pickle: str = None):
         """
-        Load data from a pickle file and assign relevant values to class attributes.
+        Load data from a pickle file and return a class instance with the relevant values.
 
         Parameters:
             path_to_pickle (str): The path to the pickle file to load.
@@ -114,16 +115,134 @@ class QuestionGeneration:
             with open(path_to_pickle, "rb") as f:
                 generated_questions_records = pickle.load(f)
 
-            self.topic_of_interest = generated_questions_records["topic_of_interest"]
-            self.generated_questions = generated_questions_records["generated_questions"]
-            self.num_questions = len(self.generate_questions)
+            instance = cls(
+                topic_of_interest=generated_questions_records["topic_of_interest"],
+                num_questions=len(generated_questions_records["generated_qs"]),
+            )
+            instance.generated_questions = generated_questions_records["generated_qs"]
+            return instance
+
         else:
             raise FileNotFoundError(f"File {path_to_pickle} not found.")
 
     def __getitem__(self, idx: int):
         if len(self.generated_questions) != 0:
-            return self.generated_questions[idx]
+            return self.generated_questions[idx][-1]
         else:
             raise IndexError(
                 "There are no generated questions. Please generate some questions first using the generate_questions() method or load the data from the previously saved pickle file using the load() method."
             )
+
+    def __len__(self):
+        return len(self.generated_questions)
+
+
+class QuestionEvaluation:
+    def __init__(
+        self,
+        questions: List[list] | None = None,
+        vector_db: chromadb.Collection | None = None,
+        qa_pipeline: Callable | None = None,
+        eval_prompt: str = Q_EVAL_PROMPT,
+        max_chunk_eval: int = 100,
+        path_to_pickle: str | None = None,
+    ) -> None:
+        """
+        Args:
+            questions (List[list]): A list of questions to be used for initialization.
+            vector_db (chromadb.Collection): The vector database for the QA pipeline.
+            qa_pipeline (Callable): The QA pipeline for evaluating the questions against chunks.
+            eval_prompt (str, optional): The evaluation prompt. Defaults to Q_EVAL_PROMPT.
+            max_chunk_eval (int, optional): The maximum number of retrieved chunks to evaluate. Defaults to 100.
+            path_to_pickle (str, optional): The path to the pickle file to load or save.
+
+        Returns:
+            None
+        """
+
+        self.questions = questions
+        self.vector_db = vector_db
+        self.qa_pipeline = qa_pipeline
+        self.eval_prompt = eval_prompt
+        self.max_chunk_eval = max_chunk_eval
+        self.path_to_pickle = path_to_pickle
+        self.calibration_records = []
+
+    def evaluate(self, save_to_disk: bool = True):
+        for i, question_list in tqdm(enumerate(self.questions)):
+            _, doc, question = question_list
+            source_chunk = doc["chunk"]
+            retrieved_chunks = self.vector_db.query(
+                query_texts=question,
+                n_results=self.vector_db.count(),
+            )
+            sorted_chunks = retrieved_chunks["documents"][0]
+            sorted_scores = retrieved_chunks["distances"][0]
+            source_chunk_index = sorted_chunks.index(source_chunk)
+
+            relevant_chunk_found = False
+            max_chunk_eval = min(self.max_chunk_eval, len(sorted_chunks))
+
+            for j, (chunk_text, chunk_score) in enumerate(
+                zip(sorted_chunks[:max_chunk_eval], sorted_scores[:max_chunk_eval])
+            ):
+
+                if chunk_text.lower() == source_chunk.lower():
+                    relevant_chunk_found = True
+                    break
+
+                else:
+                    response = self.qa_pipeline(
+                        self.eval_prompt.format(question=question, context=chunk_text)
+                    )
+                    try:
+                        decision = eval(response)["decision"]
+                    except:
+                        continue
+
+                    if decision.lower() == "yes":
+                        relevant_chunk_found = True
+                        break
+
+            if relevant_chunk_found:
+                record = {
+                    "generated_q": question_list,
+                    "source_chunk_text": source_chunk,
+                    "source_chunk_rank": source_chunk_index,
+                    "relevant_chunk_text": chunk_text,
+                    "relevant_chunk_rank": j,
+                    "cosine_distance": chunk_score,
+                }
+                self.calibration_records.append(record)
+
+        if save_to_disk:
+            self.save()
+
+    def save(self):
+        with open(self.path_to_pickle, "wb") as f:
+            pickle.dump(self.calibration_records, f)
+        print("Saved to disk!")
+
+    @classmethod
+    def from_pickle(cls, path_to_pickle: str = None):
+        if os.path.exists(path_to_pickle):
+            with open(path_to_pickle, "rb") as f:
+                calibration_records = pickle.load(f)
+
+            instance = cls(questions=[record["generated_q"] for record in calibration_records])
+            instance.calibration_records = calibration_records
+            return instance
+
+        else:
+            raise FileNotFoundError(f"File {path_to_pickle} not found.")
+
+    def __getitem__(self, idx: int):
+        if len(self.calibration_records) != 0:
+            return self.calibration_records[idx]
+        else:
+            raise IndexError(
+                "There are no calibration records. Please evaluate some questions first using the evaluate() method or load the data from the previously saved pickle file using the load() method."
+            )
+
+    def __len__(self):
+        return len(self.calibration_records)
