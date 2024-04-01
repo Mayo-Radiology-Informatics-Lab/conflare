@@ -44,7 +44,7 @@ def chunk_docs(
 
     Returns:
         List[Dict[str, str]]: A list of dictionaries, where each dictionary represents a chunk of text. 
-        Each dictionary contains the "content" of the chunk, the "index" of the chunk within the document, 
+        Each dictionary contains the chunk's text in "chunk", the index of the chunk in "chunk_index" within the document, 
         and any other fields from the original document that are not "content".
     """
     
@@ -53,7 +53,7 @@ def chunk_docs(
         chunks = chunk_text(doc["content"], chunk_size, chunk_overlap)
         for i, chunk in enumerate(chunks):
             chunked_docs.append(
-                {"content": chunk, "index": i, **{k: v for k, v in doc.items() if k != "content"}}
+                {"chunk": chunk, "chunk_index": i, **{k: v for k, v in doc.items() if k != "content"}}
             )
 
     return chunked_docs

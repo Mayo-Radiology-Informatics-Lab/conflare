@@ -81,3 +81,29 @@ This is a poor question, because it is not based on the provided chunk!
 {context}
 
 """
+
+Q_EVAL_PROMPT = """
+###
+
+You are given a QUESTION and a CHUNK of text. Determine if the CHUNK directly or potentialy answers the QUESTION. Use the following instructions and examples for your evaluation:
+
+-- INSTRUCTIONS --
+
+- Your RESPONSE MUST be one of the two ```json``` options: {{"decision": "YES"}} or {{"decision": "NO"}}. Do not include any extra text or commentary.
+- If the CHUNK is primarily composed of REFERENCE TITLES, CITATIONS, or NAMES without substantive content related to the QUESTION, you MUST respond with {{"decision": "NO"}}.
+- Carefully assess whether the CHUNK explicitly mentions the answer to the QUESTION. If in doubt, err on the side of caution and consider the relevance and directness of the information.
+- If the CHUNK provides detailed information related to the QUESTION but does not directly address the QUESTION's core inquiry, consider the depth and relevance of the information before deciding.
+- Avoid confirmation bias; do not assume relevance based solely on related topics or keywords. The presence of keywords alone does not constitute a "YES" decision.
+
+-- EXAMPLE 1 --
+
+- Example QUESTION: "What are some common challenges faced during the development of computer-aided systems for detecting lung nodules on computed tomography images?"
+- Example CHUNK: "Diagnostics 2021 ,11, 1405 3 of 36 Computed Tomography (CT) is often used for assessing COVID-19 severity in the lung regions and is considered an important component of the computer-aided diagnosis for lung image analysis. For a complete diagnosis of the COVID-19 severity, one must first identify the region of interest in these CT scans. There are two main challenges associated with the processing of CT scans: first and foremost, the challenge is the large volume of patients in diagnostic centers with each having 200 slices to be processed. This makes the task of processing scanned images tedious and time-consuming. The second issue with current automated or semi-automated systems is reliability, accuracy, and clinical effectiveness. One of the major causes for unreliable accuracy and low performance is the intensity-based segmentation methods which are influenced by local or global statistical methods. Furthermore, it does not take advantage of the cohort’s knowledge. Thus, there is a clear need for an automated and accurate joint left and right lung identification system in CT scans."
+- The correct decision for this example is {{"decision": "YES"}} because the CHUNK explicitly discusses challenges associated with processing CT scans, which directly answers the QUESTION about challenges in developing computer-aided systems for detecting lung nodules.
+
+-- QUESTION --
+{question}
+
+-- CHUNK --
+{context}
+"""
