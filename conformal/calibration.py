@@ -260,10 +260,13 @@ class QuestionEvaluation:
 
 def create_calibration_records(
     docs: List[Dict[str, str]],
-    size: int,
-    topic_of_interest: str,
     qa_pipeline: Callable,
     vector_db: chromadb.Collection,
+    size: int,
+    topic_of_interest: str,
+    max_chunk_eval: int,
+    generation_prompt: str = Q_GENERATION_PROMPT,
+    evaluation_prompt: str = Q_EVAL_PROMPT,
     save_root: str = "./data/calibration_set",
     save_to_disk: bool = False,
 ) -> List[Dict[str, str]]:
@@ -287,6 +290,7 @@ def create_calibration_records(
         qa_pipeline=qa_pipeline,
         num_questions=size,
         topic_of_interest=topic_of_interest,
+        q_generation_prompt=generation_prompt,
         path_to_pickle=os.path.join(save_root, "Generated_Questions.pkl"),
     )
     generated_questions = q_generation.generate_questions(save_to_disk=save_to_disk)
@@ -294,6 +298,8 @@ def create_calibration_records(
         questions=generated_questions,
         qa_pipeline=qa_pipeline,
         vector_db=vector_db,
+        eval_prompt=evaluation_prompt,
+        max_chunk_eval=max_chunk_eval,
         path_to_pickle=os.path.join(save_root, "Calibration_Records.pkl"),
     )
     calibration_records = q_evaluation.evaluate_questions(save_to_disk=save_to_disk)

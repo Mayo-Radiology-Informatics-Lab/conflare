@@ -99,7 +99,8 @@ You are given a QUESTION and a CHUNK of text. Determine if the CHUNK directly or
 
 - Example QUESTION: "What are some common challenges faced during the development of computer-aided systems for detecting lung nodules on computed tomography images?"
 - Example CHUNK: "Diagnostics 2021 ,11, 1405 3 of 36 Computed Tomography (CT) is often used for assessing COVID-19 severity in the lung regions and is considered an important component of the computer-aided diagnosis for lung image analysis. For a complete diagnosis of the COVID-19 severity, one must first identify the region of interest in these CT scans. There are two main challenges associated with the processing of CT scans: first and foremost, the challenge is the large volume of patients in diagnostic centers with each having 200 slices to be processed. This makes the task of processing scanned images tedious and time-consuming. The second issue with current automated or semi-automated systems is reliability, accuracy, and clinical effectiveness. One of the major causes for unreliable accuracy and low performance is the intensity-based segmentation methods which are influenced by local or global statistical methods. Furthermore, it does not take advantage of the cohort’s knowledge. Thus, there is a clear need for an automated and accurate joint left and right lung identification system in CT scans."
-- The correct decision for this example is {{"decision": "YES"}} because the CHUNK explicitly discusses challenges associated with processing CT scans, which directly answers the QUESTION about challenges in developing computer-aided systems for detecting lung nodules.
+- explanation: The correct decision for this example is {{"decision": "YES"}} because the CHUNK explicitly discusses challenges associated with processing CT scans, which directly answers the QUESTION about challenges in developing computer-aided systems for detecting lung nodules.
+- Your output MUST be this for this example: {{"decision": "YES"}}
 
 -- QUESTION --
 {question}
@@ -107,3 +108,5 @@ You are given a QUESTION and a CHUNK of text. Determine if the CHUNK directly or
 -- CHUNK --
 {context}
 """
+
+SYSTEM_PROMPT = "You are an expert radiologist and data scientist!"

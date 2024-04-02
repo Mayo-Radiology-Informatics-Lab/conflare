@@ -92,7 +92,7 @@ class ConformalRetrievalQA(SimpleRetrievalQA):
             doc for doc, distance in zip(doc_texts, doc_distances) if distance < threshold
         ]
         if self.verbose:
-            print(f"Input Error Rate: {self.error_rate * 100:.2f}")
+            print(f"Input Error Rate: {self.error_rate * 100:.2f}%")
             print(f"Selected cosine distance thereshold: {threshold:.3f}")
             print(f"Number of retrieved documents: {len(relevant_docs)}")
 

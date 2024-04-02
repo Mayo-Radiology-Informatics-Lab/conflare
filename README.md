@@ -29,12 +29,22 @@ conformal_rag = ConformalRetrievalQA(
     qa_pipeline=qa_pipeline,
     vector_db=vector_db,
     calibration_records=calibration_records,
-    error_rate=0.05,
+    error_rate=0.10,
+    verbose=True
 )
 
 response, retrieved_docs = conformal_rag(
-    "What types of regularization methods have been used in training of the deep models?"
+    "How can a transformer model be used in detection of COVID?"
 )
+print(response)
+```
+```
+>>>
+Input Error Rate: 10.00%
+Selected cosine distance thereshold: 0.456
+Number of retrieved documents: 2
+
+A transformer model can be used in the detection of COVID-19 by analyzing medical images ...
 ```
 
 If you have run this script once before and saved the calibration records to disk, you can use the following to load the calibration records:
