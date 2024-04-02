@@ -70,7 +70,7 @@ class QuestionGeneration:
                 self.generated_questions.append([i, doc, g_question])
                 generation_pbar.update(1)
 
-            if len(self.generate_questions) == self.num_questions:
+            if len(self.generated_questions) == self.num_questions:
                 break
 
         if save_to_disk:
