@@ -126,6 +126,9 @@ class QuestionGeneration:
 
         else:
             raise FileNotFoundError(f"File {path_to_pickle} not found.")
+    
+    def get_generated_questions(self) -> List[List]:
+        return self.generated_questions
 
     def __getitem__(self, idx: int):
         if len(self.generated_questions) != 0:
@@ -170,7 +173,7 @@ class QuestionEvaluation:
         self.path_to_pickle = path_to_pickle
         self.calibration_records = []
 
-    def evaluate(self, save_to_disk: bool = False) -> List[Dict[str, str]]:
+    def evaluate_questions(self, save_to_disk: bool = False) -> List[Dict[str, str]]:
         for i, question_list in tqdm(enumerate(self.questions)):
             _, doc, question = question_list
             source_chunk = doc["chunk"]
