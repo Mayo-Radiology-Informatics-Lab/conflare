@@ -23,7 +23,7 @@ class SimpleRetrievalQA:
         self.qa_pipeline = qa_pipeline
         self.topk = topk
 
-    def retrieve_docs(self, query: str, topk: int):
+    def retrieve_docs(self, query: str, topk: int) -> List[str]:
         retrieved_docs = self.vector_db.query(query_texts=query, n_results=topk)["documents"][0]
         return retrieved_docs
 
@@ -64,8 +64,8 @@ class ConformalRetrievalQA(SimpleRetrievalQA):
         self.error_rate = error_rate
         super().__init__(qa_pipeline, vector_db, topk=vector_db.count())
 
-    def retrieve_docs(self, query: str, topk: int):
-        retrieved_docs = super().retrieve_docs(query, topk)
+    def retrieve_docs(self, query: str, topk: int) -> List[str]:
+        retrieved_docs = self.vector_db.query(query_texts=query, n_results=topk)
         return self.conformal_filter(retrieved_docs)
 
     def conformal_filter(self, retrieved_docs: Dict[str, list]):
