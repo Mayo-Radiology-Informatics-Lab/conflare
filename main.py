@@ -1,3 +1,7 @@
+"""
+Main script for RAG with conformal prediction.
+"""
+
 from types import ModuleType
 from typing import Dict, List, Tuple
 import os
@@ -14,11 +18,6 @@ from utils.preprocess import chunk_docs
 from utils.prompts import SYSTEM_PROMPT
 
 import configs
-
-# TODO: using configs and replacing default params
-# TODO: once testing w/ openai and once with HF
-# TODO: once testing in creating mode and once in loading
-# TODO: remind somehow to change the prompts for the MISTRAL model
 
 
 def initialize_pipeline(

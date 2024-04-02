@@ -11,6 +11,7 @@ These are 3 main tasks that this repo helps you with:
 
 Put your `.pdf` documents in the directory specified in `configs/paths.py` and run the following. (default: `DOCUMENT_DIR = "./data/documents"`)
 
+Look at the `main.py` file for how to use the repo in details.
 Example:
 
 ```python

@@ -6,7 +6,7 @@ TOPIC = "Deep Learning"
 MAX_CHUNK_EVAL = 100
 
 # MODEL
-MODEL = "gpt-4"
+MODEL = "gpt-4" # remember to modify the prompts in utils/prompts.py accordingly with the type of model you use.
 QUANTIZE = True # used only for HF models
 TEMPERATURE = 0.1
 MAX_TOKENS = 2000
