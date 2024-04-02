@@ -9,6 +9,8 @@ These are 3 main tasks that this repo helps you with:
 2. Creating (or loading) a Calibration set
 3. Retrieval Augmented Generation by applying conformal prediction
 
+Put your .pdf documents in the ./data/documents dir and run the following.
+
 Example:
 
 ```python
