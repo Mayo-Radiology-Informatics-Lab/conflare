@@ -3,7 +3,8 @@
 # CONFLARE: CONFormal LArge language model REtrieval
 
 This is the repo for the [CONFLARE paper](arxiv.com) giving an easy access to scripts to do RAG w/ Conformal guarantees.
-These are 3 main tasks that this repo helps you with:
+
+Here are the 3 main tasks which this repo helps you with:
 
 1. Loading the source documents (+ cleaning and chunking them)
 2. Creating (or loading) a Calibration set
