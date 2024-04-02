@@ -9,21 +9,21 @@ These are 3 main tasks that this repo helps you with:
 2. Creating (or loading) a Calibration set
 3. Retrieval Augmented Generation by applying conformal prediction
 
-Put your .pdf documents in the ./data/documents dir and run the following.
+Put your `.pdf` documents in the directory specified in `configs/paths.py` and run the following. (default: `DOCUMENT_DIR = "./data/documents"`)
 
 Example:
 
 ```python
 # 1
-docs, qa_pipeline, vector_db = initialize_pipeline(path_to_docs="./data/documents")
+docs, qa_pipeline, vector_db = initialize_pipeline(configs)
 
 # 2
 calibration_records = create_calibration_records(
     docs,
-    size=100,
-    topic_of_interest="Deep Learning",
     qa_pipeline=qa_pipeline,
     vector_db=vector_db,
+    size=100,
+    topic_of_interest="Deep Learning"
 )
 
 # 3
