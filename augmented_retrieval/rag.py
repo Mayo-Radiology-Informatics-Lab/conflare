@@ -59,9 +59,11 @@ class ConformalRetrievalQA(SimpleRetrievalQA):
         vector_db: chromadb.Collection,
         calibration_records: List[Dict[str, str]],
         error_rate: float = 0.05,
+        verbose: bool = False,
     ) -> None:
         self.calibration_records = calibration_records
         self.error_rate = error_rate
+        self.verbose = verbose
         super().__init__(qa_pipeline, vector_db, topk=vector_db.count())
 
     def retrieve_docs(self, query: str, topk: int) -> List[str]:
@@ -89,5 +91,9 @@ class ConformalRetrievalQA(SimpleRetrievalQA):
         relevant_docs = [
             doc for doc, distance in zip(doc_texts, doc_distances) if distance < threshold
         ]
+        if self.verbose:
+            print(f"Input Error Rate: {self.error_rate * 100:.2f}")
+            print(f"Selected cosine distance thereshold: {threshold:.3f}")
+            print(f"Number of retrieved documents: {len(relevant_docs)}")
 
         return relevant_docs
