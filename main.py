@@ -7,17 +7,17 @@ from typing import Dict, List, Tuple
 import os
 
 import chromadb
-from models.openai import OpenAIModelQA
-from models.hf import HFModelQA
-from augmented_retrieval.vector_db import get_vector_db
-from augmented_retrieval.embed import TextEmbedding
-from augmented_retrieval.rag import ConformalRetrievalQA
-from conformal.calibration import QuestionGeneration, QuestionEvaluation, create_calibration_records
-from utils.loaders import load_dir, initialize_pipeline
-from utils.preprocess import chunk_docs
-from utils.prompts import SYSTEM_PROMPT
+from src.models.openai import OpenAIModelQA
+from src.models.hf import HFModelQA
+from src.augmented_retrieval.vector_db import get_vector_db
+from src.augmented_retrieval.embed import TextEmbedding
+from src.augmented_retrieval.rag import ConformalRetrievalQA
+from src.conformal.calibration import QuestionGeneration, QuestionEvaluation, create_calibration_records
+from src.utils.loaders import load_dir, initialize_pipeline
+from src.utils.preprocess import chunk_docs
+from src.utils.prompts import SYSTEM_PROMPT
 
-import configs
+import src.configs as configs
 
 
 def initialize_pipeline(

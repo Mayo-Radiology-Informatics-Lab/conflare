@@ -29,4 +29,3 @@ class TextEmbedding:
         ).tolist()
 
         return embeddings
-

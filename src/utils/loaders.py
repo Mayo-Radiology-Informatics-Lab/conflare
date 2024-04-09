@@ -7,7 +7,7 @@ from glob import glob
 from pypdf import PdfReader
 from tqdm import tqdm
 
-from utils.preprocess import remove_illegal_chars
+from src.utils.preprocess import remove_illegal_chars
 
 
 def pdf_loader(pdf_path: str) -> List[Dict[str, str]]:

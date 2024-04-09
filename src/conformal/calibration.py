@@ -9,7 +9,7 @@ import random
 import chromadb
 from tqdm import tqdm
 
-from utils.prompts import Q_GENERATION_PROMPT, Q_EVAL_PROMPT
+from src.utils.prompts import Q_GENERATION_PROMPT, Q_EVAL_PROMPT
 
 
 class QuestionGeneration:
