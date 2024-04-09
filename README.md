@@ -1,23 +1,41 @@
+<img src="https://i.ibb.co/vPyySmT/conflare-pipeline.png" alt="drawing" width="600"/>
+
+
 # CONFLARE: CONFormal LArge language model REtrieval
 
- ![figure1](./media/conflare-pipeline.png)
+This is the official repo for the [CONFLARE paper](https://arxiv.org/abs/2404.04287) and the related python package: `conflare`.
 
-This is the repo for the [CONFLARE article](https://arxiv.org/abs/2404.04287), which provides easy access to scripts for performing RAG with Conformal guarantees.
+## Installation
 
-Here are the 3 main tasks which this repo helps you with:
+```bash
+pip install conflare
+```
+
+Here are the 3 main tasks this package helps you with:
 
 1. Loading the source documents (+ cleaning and chunking them)
 2. Creating (or loading) a Calibration set
 3. Retrieval Augmented Generation by applying conformal prediction
 
-## How to use
 
-Start by clonning this repository and installing the required packages and frameworks in the `requirements.txt` file.
-Then put your `.pdf` documents in the directory specified in `configs/paths.py` (default: `DOCUMENT_DIR = "./data/documents"`) and run the following codes, similar to the `main.py` file.
+## How to use
+First, install the `conflare` package using `pip`. Then, use the following example as a starting point to use this package.
+
+Example:
 
 ```python
 # 1
-docs, qa_pipeline, vector_db = initialize_pipeline(configs)
+import os
+os.environ['OPENAI_API_KEY'] = 'your openai secret key'
+# to use HuggingFace models w/o needing an openai key, look below.
+
+import conflare
+from conflare import initialize_pipeline
+from conflare.conformal.calibration import create_calibration_records
+from conflare.augmented_retrieval.rag import ConformalRetrievalQA
+
+document_dir = './data/documents'
+docs, qa_pipeline, vector_db = initialize_pipeline(document_dir)
 
 # 2
 calibration_records = create_calibration_records(
@@ -42,7 +60,6 @@ response, retrieved_docs = conformal_rag(
 )
 print(response)
 ```
-Example output:
 ```
 >>>
 Input Error Rate: 10.00%
@@ -52,12 +69,28 @@ Number of retrieved documents: 2
 A transformer model can be used in the detection of COVID-19 by analyzing medical images ...
 ```
 
-If you have run this script once before and saved the calibration records to disk, you can use the following to load the calibration records:
+If you have run this script once before and saved the calibration records to disk, you can use the following to load the calibration records. We've provided example `.pkl` files of generated questions and calibration recordings in the `./data/calibration_set/` directory of this repo.
 
 ```python
+from conflare.conformal.calibration import QuestionEvaluation
+
 q_evaluation = QuestionEvaluation.from_pickle(path_to_pickle)
 calibration_records = q_evaluation.get_calibration_records()
 ```
+
+## Arguments
+
+Here are some of the more important arguments that the functions and classes in this package use.
+You can also take a look at the definition of `initialize_pipeline` function to see most of them.
+Looking at the definition of `initialize_pipeline`, you can see the sequence of the functions called inside it and use them in your own custom way if neccessary.
+
+
+`model`: the model name used for QA and retreivals. If set to `gpt-*` models, it will use the OpenAI models and an OpenAI API Key will be required. It can also be set to models names on HuggingFace like `mistralai/Mistral-7B-Instruct-v0.1` to use HF models w/o needing a key. 
+
+<br>
+
+`embedding_model`: the model from `sentence-transformers` library to be used to create embeddings for text chunks and user questions.
+
 ## Citation
 
 If you use this code in your research, please cite the following paper:
