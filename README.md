@@ -27,7 +27,7 @@ Example:
 # 1
 import os
 os.environ['OPENAI_API_KEY'] = 'your openai secret key'
-# to use HuggingFace models w/o needing an openai key, look below.
+# to use HuggingFace models w/o needing an openai key, look at the arguments section below.
 
 import conflare
 from conflare import initialize_pipeline
