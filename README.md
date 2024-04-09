@@ -2,7 +2,7 @@
 
  ![figure1](./media/conflare-pipeline.png)
 
-This is the repo for the [CONFLARE article](arxiv.com), which provides easy access to scripts for performing RAG with Conformal guarantees.
+This is the repo for the [CONFLARE article](https://arxiv.org/abs/2404.04287), which provides easy access to scripts for performing RAG with Conformal guarantees.
 
 Here are the 3 main tasks which this repo helps you with:
 
@@ -12,7 +12,8 @@ Here are the 3 main tasks which this repo helps you with:
 
 ## How to use
 
-Put your `.pdf` documents in the directory specified in `configs/paths.py` (default: `DOCUMENT_DIR = "./data/documents"`) and run the following codes, similar to the `main.py` file.
+Start by clonning this repository and installing the required packages and frameworks in the `requirements.txt` file.
+Then put your `.pdf` documents in the directory specified in `configs/paths.py` (default: `DOCUMENT_DIR = "./data/documents"`) and run the following codes, similar to the `main.py` file.
 
 ```python
 # 1
