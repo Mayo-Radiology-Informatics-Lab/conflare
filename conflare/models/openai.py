@@ -25,7 +25,7 @@ def setup_openai_api(api_key: str | None = None) -> None:
         openai.api_key = os.getenv("OPENAI_API_KEY")
     else:
         raise ValueError(
-            "No OpenAI API key provided. Please either add it as env variable or put it in /configs/apis.py file"
+            "No OpenAI API key provided. Please set it as an env variable in the os.environ"
         )
 
 
@@ -43,7 +43,7 @@ class OpenAIModelQA:
     ) -> None:
         """
         Initializes the class with the specified model, system prompt, temperature, max tokens, frequency penalty, and API key.
-        
+
         Args:
             model (str): The GPT model to use for the generation.
             system_prompt (str): The prompt to provide to the GPT model.
@@ -52,7 +52,7 @@ class OpenAIModelQA:
             frequency_penalty (float): The frequency penalty parameter for generation.
             api_key (str | None): The API key for accessing the OpenAI API, or None if not provided.
         """
-                
+
         setup_openai_api(api_key)
         self.model = model
         self.temperature = temperature

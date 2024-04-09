@@ -7,7 +7,7 @@ from glob import glob
 from pypdf import PdfReader
 from tqdm import tqdm
 
-from utils.preprocess import remove_illegal_chars
+from conflare.utils.preprocess import remove_illegal_chars
 
 
 def pdf_loader(pdf_path: str) -> List[Dict[str, str]]:
@@ -47,7 +47,7 @@ def load_dir(path: str, extension: str = "pdf") -> List[Dict[str, str]]:
         The function currently supports loading PDF files. Other formats are not implemented.
     """
     doc_paths = glob(f"{path}/*.{extension}")
-    print(f"Found {len(doc_paths)} {extension} files in this dir.")
+    print(f"Found {len(doc_paths)} {extension} files in {path}.")
     docs = []
     if extension == "pdf":
         loader = pdf_loader

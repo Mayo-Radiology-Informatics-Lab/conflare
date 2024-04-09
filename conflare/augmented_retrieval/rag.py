@@ -6,7 +6,7 @@ from typing import Callable, Dict, List
 import chromadb
 import numpy as np
 
-from utils.prompts import RAG_QA_PROMPT
+from conflare.utils.prompts import RAG_QA_PROMPT
 
 
 class SimpleRetrievalQA:
