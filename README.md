@@ -1,8 +1,8 @@
-<img src="./media/conflare.png" alt="drawing" width="200"/>
-
 # CONFLARE: CONFormal LArge language model REtrieval
 
-This is the repo for the [CONFLARE paper](arxiv.com) giving an easy access to scripts to do RAG w/ Conformal guarantees.
+ ![figure1](./media/conflare-pipeline.png)
+
+This is the repo for the [CONFLARE article](arxiv.com), which provides easy access to scripts for performing RAG with Conformal guarantees.
 
 Here are the 3 main tasks which this repo helps you with:
 
@@ -10,10 +10,9 @@ Here are the 3 main tasks which this repo helps you with:
 2. Creating (or loading) a Calibration set
 3. Retrieval Augmented Generation by applying conformal prediction
 
-Put your `.pdf` documents in the directory specified in `configs/paths.py` and run the following. (default: `DOCUMENT_DIR = "./data/documents"`)
+## How to use
 
-Look at the `main.py` file for how to use the repo in details.
-Example:
+Put your `.pdf` documents in the directory specified in `configs/paths.py` (default: `DOCUMENT_DIR = "./data/documents"`) and run the following codes, similar to the `main.py` file.
 
 ```python
 # 1
@@ -42,6 +41,7 @@ response, retrieved_docs = conformal_rag(
 )
 print(response)
 ```
+Example output:
 ```
 >>>
 Input Error Rate: 10.00%
@@ -57,6 +57,18 @@ If you have run this script once before and saved the calibration records to dis
 q_evaluation = QuestionEvaluation.from_pickle(path_to_pickle)
 calibration_records = q_evaluation.get_calibration_records()
 ```
+## Citation
 
-![figure1](./media/conflare-pipeline.png)
-![figure2](./media/RAG.jpg)
+If you use this code in your research, please cite the following paper:
+
+```
+@article{conflare,
+  title={CONFLARE: CONFormal LArge language model REtrieval},
+  author={Pouria Rouzrokh and Shahriar Faghani and Cooper U. Gamble and Moein Shariatnia and Bradley J. Erickson},
+  journal={arXiv preprint arXiv:2404.04287},
+  year={2024},
+  eprint={2404.04287},
+  archivePrefix={arXiv},
+  primaryClass={cs.CL}
+}
+```
