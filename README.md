@@ -6,6 +6,7 @@
 This is the official repo for the [CONFLARE paper](https://arxiv.org/abs/2404.04287) and the related python package: `conflare`.
 
 ## Installation
+[![Downloads](https://static.pepy.tech/badge/conflare)](https://pepy.tech/project/conflare)
 
 ```bash
 pip install conflare
